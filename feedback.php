@@ -1,0 +1,56 @@
+<html lang="de" dir="ltr">
+  <head>
+    <title>geoweb.m10 - Feedback</title>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="../css/stylesheet.css">
+  </head>
+
+  <body>
+    <ul id="menu">
+      <li>
+        <a href="../start_content_grp.htm"> Home </a>
+      </li>
+      <li>
+        <a href="../projekt.htm"> Projekt </a>
+      </li>
+      <li>
+        <a href="uebungen.htm"> &Uumlbungsbeispiele </a>
+      </li>
+      <li>
+        <a href="#"> Intranet </a>
+      </li>
+    </ul>
+    <h2>Feedback-Formular</h2>
+
+    <form method="POST" action="feedback_send.php">
+      <input name="pos" type="hidden" value="<?php echo $_GET['pos'];?> ">
+      <input type="radio" name="geschlecht" value="Frau"/> Frau
+      <input type="radio" name="geschlecht" value="Herr"/> Herr<br />
+      <table>
+        <tr><td>Name:</td>
+           <td><input type="text" name="name" size="50" /></td>
+        </tr>
+        <tr><td>E-Mail: </td>
+           <td><input type="text" name="email" size="50" /></td>
+        </tr>
+      </table>
+      Feedback: <br />
+      <textarea name="message" rows="10" cols="50"></textarea>
+      <br />
+      <input type="checkbox" name="team" checked="checked" value="ON" />
+             Ich bin Mitglied des geoweb-Teams <br /><br />
+      <input type="submit" value="Abschicken">
+      <input type="reset" value="Zurücksetzen"> <br /><br />
+      Ihr Feedback wird nicht per E-Mail an die Autoren/innen zugestellt,<br>
+      jedoch in der Projekt-Datenbank gespeichert.<br /><br />
+      <br />
+    </form>
+
+    <p>geoweb.g02, Beispiel ausgehend von<br />
+    <a href="http://www.thesitewizard.com/archive/feedbackphp.shtml"
+    target="_blank"> PHP Tutorial: Feedback Form Script</a> </p>
+  </body>
+  <footer id ="footer">
+  	<a href="../imprint.htm"> Impressum </a>
+  </footer>
+</html>
