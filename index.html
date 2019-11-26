@@ -54,9 +54,21 @@
         text-align: left;
         width: 125px;
       }
+      #feedback {
+        z-index: 10;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.5em;
+      }
+
+      
     </style>
   </head>
   <body>
+    <div id="feedback">
+      <button id="GPSfeedback">Feedback an aktueller Position erfassen</button>
+    </div>
     <div id="map" class="fullscreen"></div>
     <div class="arrow_box" id="popup-container">
       <div id="popup-content"></div>

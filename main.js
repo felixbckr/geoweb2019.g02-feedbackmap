@@ -4,15 +4,20 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import Stamen from 'ol/source/Stamen';
 import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 import Vector from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import Style from 'ol/style/Style';
 import Circle from 'ol/style/Circle';
+import Feature from 'ol/Feature';
+import {circular} from 'ol/geom/Polygon';
+import Point from 'ol/geom/Point';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Overlay from 'ol/Overlay';
 import {fromLonLat, toLonLat} from 'ol/proj';
 import sync from 'ol-hashed';
+import Control from 'ol/control/Control';
 
 // define the map
 const map = new Map({
@@ -39,6 +44,30 @@ const bezirkeLayer = new VectorLayer({
   })
 });
 map.addLayer(bezirkeLayer);
+
+
+//adds a new vectorlayer for the GPS based locationmark
+const GPSmarker = new VectorSource();
+const GPSlayer = new VectorLayer({
+  source: GPSmarker
+});
+map.addLayer(GPSlayer);
+
+//gets the GPS-Location and accuracy from the browsers geolocation API
+//adds point to the layer
+navigator.geolocation.watchPosition(function(pos) {
+  const coords = [pos.coords.longitude, pos.coords.latitude];
+  const accuracy = circular(coords, pos.coords.accuracy);
+  GPSmarker.clear(true);
+  GPSmarker.addFeatures([
+    new Feature(accuracy.transform('EPSG:4326', map.getView().getProjection())),
+    new Feature(new Point(fromLonLat(coords)))
+  ]);
+}, function(error) {
+  alert(`ERROR: ${error.message}`);
+}, {
+  enableHighAccuracy: true
+});
 
 
 // layer containing existing feedback points
@@ -112,13 +141,24 @@ map.on('singleclick', function(e) {
   }
 });
 
-/*
- * function to calculate statistics for districts
- * sets the property 'FEEDBACKS' for each district to the number of feedbacks inside
- */
+const GPSfeedback = document.getElementById('GPSfeedback');
 
+GPSfeedback.addEventListener('click', function(event) {
+  console.log('Hallo Welt');
+  function success(pos) {
+    const GPSposition = [pos.coords.longitude, pos.coords.latitude];
+    console.log('GPSposition: ' + GPSposition);
+    // const position = toLonLat(GPSposition);
+    // console.log('position: ' + position);
+    window.location.href = 'https://student.ifip.tuwien.ac.at/geoweb/2019/g02/feedbackMap/feedback.php?pos=' + GPSposition.join(' ');
+  }
+  console.log('Ende Succes');
+  navigator.geolocation.getCurrentPosition(success);
+  console.log('Nach Succes');
+});
 
-
+// function to calculate statistics for districts
+// sets the property 'FEEDBACKS' for each district to the number of feedbacks inside
 function calculateStatistics() {
   const feedbacks = feedbackLayer.getSource().getFeatures();
   const bezirke = bezirkeLayer.getSource().getFeatures();
@@ -137,8 +177,6 @@ function calculateStatistics() {
     }
   }
 }
-
-
 
 // we need both layers to calculate the statistics
 // try to calculate the statistics when either is loaded
@@ -166,3 +204,4 @@ bezirkeLayer.setStyle(function(feature) {
     })
   });
 });
+
